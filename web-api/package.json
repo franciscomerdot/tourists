@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "setup": "npm install -g nodemon && npm install",
-    "start": "nodemon ./source/index.js --legacy-watch"
+    "start": "cd source && nodemon startup.js --legacy-watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@jems/di": "^0.3.4",
     "hapi": "^16.5.0"
   }
 }

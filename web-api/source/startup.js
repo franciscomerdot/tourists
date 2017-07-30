@@ -12,10 +12,7 @@ kernel.loadModules(moduleFinder.getEndpointsModules());
 
 let routers = kernel.resolve('routerList');
 
-
-
-server.connection({ port: 80 });
-
+server.connection({ port: 8081 });
 
 routers.forEach(function(router) {
     router.route(server);

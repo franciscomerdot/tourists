@@ -12,6 +12,7 @@
   "dependencies": {
     "@jems/di": "^0.3.4",
     "hapi": "^16.5.0",
+    "mongodb": "^2.2.30",
     "yelp-fusion": "^1.0.3"
   },
   "devDependencies": {

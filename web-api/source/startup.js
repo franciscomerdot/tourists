@@ -11,6 +11,7 @@ let moduleFinder = new ModuleFinder()
 kernel.loadModules(moduleFinder.getEndpointsModules())
 
 let routers = kernel.resolve('routerList')
+console.log(`${routers.length} routers found.`)
 
 server.connection({ port: 8081 })
 
@@ -22,5 +23,5 @@ server.start((err) => {
   if (err) {
     throw err
   }
-  console.log(`Server running at: ${server.info.uri}`)
+  console.log(`Server running at: ${server.info.uri}.`)
 })

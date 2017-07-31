@@ -42,24 +42,23 @@ module.exports = (function () {
     }
 
     let thirdPartyPlacesRepository = privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex]
-    let thirdPartyPlacesRepositoryName = `[${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()}]`
+    // let thirdPartyPlacesRepositoryName = `[${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()}]`
     repositoryIndex++
 
-    console.log(`Trying to fetch data from ${thirdPartyPlacesRepositoryName}`)
+    // console.log(`Trying to fetch data from ${thirdPartyPlacesRepositoryName}`)
 
     thirdPartyPlacesRepository.getPlacesLocatedArround(query)
       .then(thirdPartyPlaces => {
         if (thirdPartyPlaces.length) {
-          console.log(`Data feched from ${thirdPartyPlacesRepositoryName}`)
+          // console.log(`Data feched from ${thirdPartyPlacesRepositoryName}`)
           resolve(thirdPartyPlaces)
         } else {
-          console.log(`The provider ${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()}, doesn't have places arround`)
+          // console.log(`The provider ${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()}, doesn't have places arround`)
           retriveThirdPartyPlaces.call(this, repositoryIndex, query, resolve, reject)
         }
       })
-      .catch(error => {
-        console.log(error);
-        console.log(`Error feching data from ${thirdPartyPlacesRepositoryName} \n ${error}`)
+      .catch(() => {
+        // console.log(`Error feching data from ${thirdPartyPlacesRepositoryName} \n ${error}`)
         retriveThirdPartyPlaces.call(this, repositoryIndex, query, resolve, reject)
       })
   }

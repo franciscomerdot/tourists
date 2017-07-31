@@ -1,23 +1,21 @@
-"use strict";
+'use strict'
 
-const fs = require('fs');
+import fs from 'fs'
 
-function ModuleFinder() {}
+function ModuleFinder () {}
 
-ModuleFinder.prototype.getEndpointsModules = function() {
+ModuleFinder.prototype.getEndpointsModules = function () {
+  let endpointsPath = './endpoints/'
+  let modules = []
+  let directories = fs.readdirSync(endpointsPath).filter(f => fs.statSync(endpointsPath + '/' + f).isDirectory())
 
-    let endpointsPath = "./endpoints/";
-    let modules = [];
-    let directories = fs.readdirSync(endpointsPath).filter(f => fs.statSync(endpointsPath+"/"+f).isDirectory());
+  directories.forEach(directory => {
+    let ModuleClass = require(`${endpointsPath}${directory}/module`)
 
-    directories.forEach(directory => {
+    modules.push(new ModuleClass())
+  })
 
-        let ModuleClass = require(`${endpointsPath}${directory}/module`);
-
-        modules.push(new ModuleClass())
-    });
-
-    return modules;
+  return modules
 }
 
-module.exports = ModuleFinder;
+module.exports = ModuleFinder

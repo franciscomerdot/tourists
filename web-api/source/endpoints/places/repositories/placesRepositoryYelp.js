@@ -29,7 +29,7 @@ module.exports = (function () {
           latitude: locationQuery.latitude,
           longitude: locationQuery.longitud,
           categories: locationQuery.type,
-          radius: locationQuery.radius
+          radius: locationQuery.radius < 40000 ? locationQuery.radius : 4000 // TODO: Oh my good, hard code 40000, make it configurable :(, NOW ..!
         }
 
         yelpTokenProvider
@@ -40,7 +40,7 @@ module.exports = (function () {
               let firstResult = response.jsonBody.businesses[0]
               let prettyJson = JSON.stringify(firstResult, null, 4)
 
-              resolve([])
+              resolve(parseResponseToTouristModel(prettyJson))
             })
               .catch(error => reject(error))
           })

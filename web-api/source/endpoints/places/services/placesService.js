@@ -6,7 +6,8 @@ module.exports = (function () {
   function PlacesService (thirdPartyPlacesRepositoryList) {
     privateScope.set(this, {
       placesRepository: null,
-      thirdPartyPlacesRepositoryList: thirdPartyPlacesRepositoryList
+      thirdPartyPlacesRepositoryList: thirdPartyPlacesRepositoryList,
+      fetchingRespositoryIndex: 0
     })
   }
 
@@ -15,37 +16,12 @@ module.exports = (function () {
 
     return new Promise((resolve, reject) => {
       try {
-        let queryValidation = validateQuery(locationQuery)
+        let queryValidationErrors = validateQuery(locationQuery)
 
-        if (queryValidation.length) { throw new Error('bad query') }
-
-        let places = []
-        let repositoryIndex = 0
+        if (queryValidationErrors.length) { throw new Error('bad query') } // TODO: Throw to a beter message.
 
         if (privateScopeContent.thirdPartyPlacesRepositoryList.length) {
-          retriveThirdPartyPlaces(privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex],
-            locationQuery,
-            onPlacesRetivedSuccesfully,
-            onPlacesRetiveFail)
-        }
-
-        function onPlacesRetivedSuccesfully (places) {
-          if (places.length) {
-            resolve(places)
-          } else { onPlacesRetiveFail(new Error('Do no have any registered places arrownd')) }
-        }
-
-        function onPlacesRetiveFail (error) {
-          console.log(error)
-
-          repositoryIndex++
-
-          if (repositoryIndex < privateScopeContent.thirdPartyPlacesRepositoryList.length) {
-            retriveThirdPartyPlaces(privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex],
-              locationQuery,
-              onPlacesRetivedSuccesfully,
-              onPlacesRetiveFail)
-          } else { resolve([]) } // If there are not more providers, return an empty array of places. :( At least we try.
+          retriveThirdPartyPlaces.call(this, 0, locationQuery, resolve, reject) // TODO: explain why call and not a direct function call
         }
       } catch (error) {
         reject(error)
@@ -57,15 +33,34 @@ module.exports = (function () {
     return []
   }
 
-  function retriveThirdPartyPlaces (thirdPartyPlacesRepository, query, successfullCallback, failedCallback) {
-    console.log(`Trying to fetch data from ${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()} `)
+  function retriveThirdPartyPlaces (repositoryIndex, query, resolve, reject) {
+    let privateScopeContent = privateScope.get(this)
+
+    if (repositoryIndex === privateScopeContent.thirdPartyPlacesRepositoryList.length) {
+      resolve([])
+      return
+    }
+
+    let thirdPartyPlacesRepository = privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex]
+    let thirdPartyPlacesRepositoryName = `[${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()}]`
+    repositoryIndex++
+
+    console.log(`Trying to fetch data from ${thirdPartyPlacesRepositoryName}`)
 
     thirdPartyPlacesRepository.getPlacesLocatedArround(query)
       .then(thirdPartyPlaces => {
-        if (successfullCallback) { successfullCallback(thirdPartyPlaces) }
+        if (thirdPartyPlaces.length) {
+          console.log(`Data feched from ${thirdPartyPlacesRepositoryName}`)
+          resolve(thirdPartyPlaces)
+        } else {
+          console.log(`The provider ${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()}, doesn't have places arround`)
+          retriveThirdPartyPlaces.call(this, repositoryIndex, query, resolve, reject)
+        }
       })
-      .catch(err => {
-        if (failedCallback) { failedCallback(err) }
+      .catch(error => {
+        console.log(error);
+        console.log(`Error feching data from ${thirdPartyPlacesRepositoryName} \n ${error}`)
+        retriveThirdPartyPlaces.call(this, repositoryIndex, query, resolve, reject)
       })
   }
 

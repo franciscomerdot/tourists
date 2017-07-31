@@ -58,7 +58,7 @@ module.exports = (function () {
       try {
         let request = https.request(requestMetadata, function (res) {
           var entireResponse = ''
-          res.on('data', chunk => entireResponse += chunk)
+          res.on('data', chunk => { entireResponse += chunk })
           res.on('end', () => {
             let yelpTokenInfo = JSON.parse(entireResponse)
             let expirationDate = new Date()

@@ -1,8 +1,8 @@
 'use strict'
 
-const jemsDI = require('@jems/di'),
-  Hapi = require('hapi'),
-  ModuleFinder = require('./moduleFinder')
+const jemsDI = require('@jems/di')
+const Hapi = require('hapi')
+const ModuleFinder = require('./moduleFinder')
 
 let server = new Hapi.Server()
 let kernel = new jemsDI.Kernel()

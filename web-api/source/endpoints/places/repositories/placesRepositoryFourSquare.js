@@ -26,13 +26,17 @@ module.exports = (function () {
         locationQuery.type = foursquarePlacesTypeMapper.getType(locationQuery.type)
 
         if (!locationQuery.type) { resolve([]) } // If there is no map for the type, we assume that don't have places of the type.              
+        
+        // TODO: Oh my good, hard code 100000, make it configurable :(, NOW ..!
+        if (locationQuery.radius > 100000) 
+          locationQuery.radius = 100000
 
         let fourSquareRequest = `https://api.foursquare.com/v2/venues/search?ll=${locationQuery.latitude},${locationQuery.longitud}&radius=${locationQuery.radius}&categoryId=${locationQuery.type}&oauth_token=${fourSquareApiToken}`
         https.get(fourSquareRequest, resp => {
           let buffer = ''
 
           resp.setEncoding('utf8')
-          resp.on('data', chunk => buffer += chunk)
+          resp.on('data', chunk => { buffer += chunk })
             .on('end', () => {
               let fourSquareResponse
 
@@ -43,7 +47,7 @@ module.exports = (function () {
                 return
               }
 
-              if (fourSquareResponse.meta.code == 200) { resolve(parseResponseToTouristModel(fourSquareResponse)) } else { reject(new Error('Can not get FourSquare places due status: ' + fourSquareResponse.meta.errorDetail)) }
+              if (fourSquareResponse.meta.code === 200) { resolve(parseResponseToTouristModel(fourSquareResponse)) } else { reject(new Error('Can not get FourSquare places due status: ' + fourSquareResponse.meta.errorDetail)) }
             })
         })
           .on('error', error => { reject(error) })

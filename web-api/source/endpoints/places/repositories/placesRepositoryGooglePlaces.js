@@ -25,13 +25,17 @@ module.exports = (function () {
 
         if (!locationQuery.type) { resolve([]) } // If there is no map for the type, we assume that don't have places of the type.
 
+        // TODO: Oh my good, hard code 50000, make it configurable :(, NOW ..!
+        if (locationQuery.radius > 50000) 
+          locationQuery.radius = 50000
+
         let googleRequest = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?radius=${locationQuery.radius}&location=${locationQuery.latitude},${locationQuery.longitud}&type=${locationQuery.type}&key=${googleApiKey}`
 
         https.get(googleRequest, resp => {
           let buffer = ''
 
           resp.setEncoding('utf8')
-          resp.on('data', chunk => buffer += chunk)
+          resp.on('data', chunk => { buffer += chunk })
             .on('end', () => {
               let googleResponse
 
@@ -42,7 +46,7 @@ module.exports = (function () {
                 return
               }
 
-              if (googleResponse.status.toUpperCase() == 'OK') { resolve(parseResponseToTouristModel(googleResponse)) } else { reject(new Error('Can not get google places due status: ' + googleResponse.status)) }
+              if (googleResponse.status.toUpperCase() === 'OK') { resolve(parseResponseToTouristModel(googleResponse)) } else { reject(new Error('Can not get google places due status: ' + googleResponse.status)) }
             })
         })
           .on('error', error => { reject(error) })

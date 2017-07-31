@@ -1,90 +1,73 @@
-"use strict";
+'use strict'
 
-module.exports = (function() {
+module.exports = (function () {
+  var privateScope = new WeakMap()
+  /* placesRepository, */
+  function PlacesService (thirdPartyPlacesRepositoryList) {
+    privateScope.set(this, {
+      placesRepository: null,
+      thirdPartyPlacesRepositoryList: thirdPartyPlacesRepositoryList
+    })
+  }
 
-    var privateScope = new WeakMap();
-    /*placesRepository,*/
-    function PlacesService(thirdPartyPlacesRepositoryList) {
-        privateScope.set(this, {
-            placesRepository: null,
-            thirdPartyPlacesRepositoryList: thirdPartyPlacesRepositoryList
-        });
-    }
+  PlacesService.prototype.getPlacesLocatedArround = function (locationQuery) {
+    let privateScopeContent = privateScope.get(this)
 
-    PlacesService.prototype.getPlacesLocatedArround = function(locationQuery) {
-        
-        let privateScopeContent = privateScope.get(this);
+    return new Promise((resolve, reject) => {
+      try {
+        let queryValidation = validateQuery(locationQuery)
 
-        return new Promise((resolve, reject) => {
-            try {
+        if (queryValidation.length) { throw new Error('bad query') }
 
-                let queryValidation = validateQuery(locationQuery);
+        let places = []
+        let repositoryIndex = 0
 
-                if (queryValidation.length)
-                    throw new Error("bad query");
+        if (privateScopeContent.thirdPartyPlacesRepositoryList.length) {
+          retriveThirdPartyPlaces(privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex],
+            locationQuery,
+            onPlacesRetivedSuccesfully,
+            onPlacesRetiveFail)
+        }
 
-                let places = [];
-                let repositoryIndex = 0;
-           
-                if (privateScopeContent.thirdPartyPlacesRepositoryList.length) {
-                    retriveThirdPartyPlaces(privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex],
-                                            locationQuery,
-                                            onPlacesRetivedSuccesfully,
-                                            onPlacesRetiveFail);
-                }
-                                                
-                function onPlacesRetivedSuccesfully(places) {
-                    if (places.length) {
-                        resolve(places);
-                    }
-                    else
-                        onPlacesRetiveFail(new Error('Do no have any registered places arrownd'));
-                }
+        function onPlacesRetivedSuccesfully (places) {
+          if (places.length) {
+            resolve(places)
+          } else { onPlacesRetiveFail(new Error('Do no have any registered places arrownd')) }
+        }
 
-                function onPlacesRetiveFail(error) {   
+        function onPlacesRetiveFail (error) {
+          console.log(error)
 
-                    console.log(error);
+          repositoryIndex++
 
-                    repositoryIndex++;
+          if (repositoryIndex < privateScopeContent.thirdPartyPlacesRepositoryList.length) {
+            retriveThirdPartyPlaces(privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex],
+              locationQuery,
+              onPlacesRetivedSuccesfully,
+              onPlacesRetiveFail)
+          } else { resolve([]) } // If there are not more providers, return an empty array of places. :( At least we try.
+        }
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
 
-                    if (repositoryIndex < privateScopeContent.thirdPartyPlacesRepositoryList.length) {   
-                                                               
-                        retriveThirdPartyPlaces(privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex],
-                                                locationQuery, 
-                                                onPlacesRetivedSuccesfully, 
-                                                onPlacesRetiveFail);
-                    }
-                    else
-                        resolve([]); // If there are not more providers, return an empty array of places. :( At least we try.
+  function validateQuery (locationQuery) {
+    return []
+  }
 
-                    
-                }
-            }
-            catch(error) {
-                reject(error);
-            }
-        });
-    }
+  function retriveThirdPartyPlaces (thirdPartyPlacesRepository, query, successfullCallback, failedCallback) {
+    console.log(`Trying to fetch data from ${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()} `)
 
-    function validateQuery(locationQuery) {
-        return [];
-    }
-    
-    function retriveThirdPartyPlaces(thirdPartyPlacesRepository, query, successfullCallback, failedCallback) {
+    thirdPartyPlacesRepository.getPlacesLocatedArround(query)
+      .then(thirdPartyPlaces => {
+        if (successfullCallback) { successfullCallback(thirdPartyPlaces) }
+      })
+      .catch(err => {
+        if (failedCallback) { failedCallback(err) }
+      })
+  }
 
-       console.log(`Trying to fetch data from ${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()} `)
-  
-       thirdPartyPlacesRepository.getPlacesLocatedArround(query)
-                                .then(thirdPartyPlaces => {
-                                if (successfullCallback)
-                                    successfullCallback(thirdPartyPlaces); 
-                                })
-                                .catch(err => {
-                                if (failedCallback)
-                                    failedCallback(err);
-                                });
-       
-    }
-
-    return PlacesService;
-}());
+  return PlacesService
+}())

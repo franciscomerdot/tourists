@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@jems/di": "^0.3.4",
+    "@jems/di": "^0.3.4",    
     "hapi": "^16.5.0",
     "yelp-fusion": "^1.0.3"
   },
@@ -25,3 +25,4 @@
     "gulp-mocha": "^4.3.1"
   }
 }
+ 

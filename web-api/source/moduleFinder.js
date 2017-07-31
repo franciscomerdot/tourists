@@ -17,5 +17,3 @@ ModuleFinder.prototype.getEndpointsModules = function () {
 
   return modules
 }
-
-module.exports = ModuleFinder

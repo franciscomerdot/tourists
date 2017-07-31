@@ -1,21 +1,19 @@
-"use strict";
+'use strict'
 
-module.exports = (function() {
+module.exports = (function () {
+  var privateScope = new WeakMap()
 
-    var privateScope = new WeakMap();
+  function PlacesRouter (placesEndpoint) {
+    privateScope.set(this, placesEndpoint)
+  };
 
-    function PlacesRouter(placesEndpoint) {
-        privateScope.set(this, placesEndpoint);
-    }; 
+  PlacesRouter.prototype.route = function (hapiServer) {
+    var placesEndpoint = privateScope.get(this)
 
-    PlacesRouter.prototype.route = function(hapiServer) {
-      
-        var placesEndpoint = privateScope.get(this);
+    hapiServer.route({ method: 'GET',
+      path: '/places/{latitude},{longitud}/{type}',
+      handler: placesEndpoint.getPlacesLocatedArround.bind(placesEndpoint) }) // TODO: explain why we need to bind here. 
+  }
 
-        hapiServer.route({ method: 'GET',
-                           path: '/places/{latitude},{longitud}/{type}', 
-                           handler: placesEndpoint.getPlacesLocatedArround.bind(placesEndpoint) }); // TODO: explain why we need to bind here. 
-    }
-
-    return PlacesRouter;
-}());
+  return PlacesRouter
+}())

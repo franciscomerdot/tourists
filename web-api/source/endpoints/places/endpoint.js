@@ -3,14 +3,14 @@
 module.exports = (function () {
   var privateScope = new WeakMap()
 
-  function PlacesEndpoint (placesService) {
-    privateScope.set(this, placesService)
+  function PlacesEndpoint (placesSearchService) {
+    privateScope.set(this, placesSearchService)
   };
 
   PlacesEndpoint.prototype.getPlacesLocatedArround = function (request, reply) {
-    let placesService = privateScope.get(this)
+    let placesSearchService = privateScope.get(this)
 
-    placesService.getPlacesLocatedArround(request.query)
+    placesSearchService.getPlacesLocatedArround(request.query)
       .then(places => reply(places))
       .catch(error => reply(error))
   }

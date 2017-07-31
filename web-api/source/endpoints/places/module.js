@@ -16,7 +16,7 @@ module.exports = (function () {
 
     kernel.bind('placesEndpoint').to(require('./endpoint'))
 
-    kernel.bind('placesService').to(require('./services/placesService'))
+    kernel.bind('placesSearchService').to(require('./services/placesSearchService'))
 
     kernel.bind('yelpTokenProvider').to(require('./providers/yelpTokenProvider'))
     // kernel.bind('yelpTokenProvider').to(require('./providers/yelpTokenProviderThirdParty'));

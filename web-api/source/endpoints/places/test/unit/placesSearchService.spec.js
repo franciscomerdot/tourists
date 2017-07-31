@@ -15,7 +15,7 @@ before((end) => {
   kernel.createContainer('allPlacesRepositories')
   kernel.getContainer('allPlacesRepositories').setSupportContainersAliases(['functionalPlacesRepositories']) // 'unfunctionalPlacesRepositories'
 
-  kernel.bind('placesService').to(require('../../services/placesService'))
+  kernel.bind('placesSearchService').to(require('../../services/placesSearchService'))
 
   kernel.bind('thirdPartyPlacesRepository').to(function () {
     this.getIdentifier = () => 'FAIL_PLACES'
@@ -56,7 +56,7 @@ describe('The places service', () => {
   describe('When looking for places', () => {
     it('should return an empty list of places, if no repository can fectch data.', () => {
       kernel.useContainer('unfunctionalPlacesRepositories')
-      let placesService = kernel.resolve('placesService')
+      let placesService = kernel.resolve('placesSearchService')
 
       return placesService.getPlacesLocatedArround({}).then((places) => {
         (places.length).should.be.eql(0)
@@ -65,7 +65,7 @@ describe('The places service', () => {
 
     it('should return an one place in the list of places, because the available provider has one.', () => {
       kernel.useContainer('functionalPlacesRepositories')
-      let placesService = kernel.resolve('placesService')
+      let placesService = kernel.resolve('placesSearchService')
 
       return placesService.getPlacesLocatedArround({}).then((places) => {
         (places.length).should.be.eql(1)
@@ -74,7 +74,7 @@ describe('The places service', () => {
 
     it('should return an one place in the list of places, because just one provider have places and only have one.', () => {
       kernel.useContainer('allPlacesRepositories')
-      let placesService = kernel.resolve('placesService')
+      let placesService = kernel.resolve('placesSearchService')
 
       return placesService.getPlacesLocatedArround({}).then((places) => {
         (places.length).should.be.eql(1)

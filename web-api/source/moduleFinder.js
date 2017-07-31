@@ -10,9 +10,14 @@ ModuleFinder.prototype.getEndpointsModules = function () {
   let directories = fs.readdirSync(endpointsPath).filter(f => fs.statSync(endpointsPath + '/' + f).isDirectory())
 
   directories.forEach(directory => {
-    let ModuleClass = require(`${endpointsPath}${directory}/module`)
+    let ModuleClass
 
-    modules.push(new ModuleClass())
+    try {
+      ModuleClass = require(`${endpointsPath}${directory}/module`)
+      modules.push(new ModuleClass())
+    } catch (e) {
+
+    }
   })
 
   return modules

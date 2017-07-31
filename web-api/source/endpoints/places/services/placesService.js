@@ -11,23 +11,24 @@ module.exports = (function() {
         });
     }
 
-    PlacesService.prototype.getPlacesLocatedArround = function(latitude, longitud, type) {
+    PlacesService.prototype.getPlacesLocatedArround = function(locationQuery) {
         
         let privateScopeContent = privateScope.get(this);
 
         return new Promise((resolve, reject) => {
             try {
+
+                let queryValidation = validateQuery(locationQuery);
+
+                if (queryValidation.length)
+                    throw new Error("bad query");
+
                 let places = [];
                 let repositoryIndex = 0;
-                let query = {
-                    latitude: latitude,
-                    longitud: longitud, 
-                    type: type
-                }
-
+           
                 if (privateScopeContent.thirdPartyPlacesRepositoryList.length) {
                     retriveThirdPartyPlaces(privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex],
-                                            query,
+                                            locationQuery,
                                             onPlacesRetivedSuccesfully,
                                             onPlacesRetiveFail);
                 }
@@ -42,14 +43,14 @@ module.exports = (function() {
 
                 function onPlacesRetiveFail(error) {   
 
-                    console.log(error, '\n');
+                    console.log(error);
 
                     repositoryIndex++;
 
                     if (repositoryIndex < privateScopeContent.thirdPartyPlacesRepositoryList.length) {   
                                                                
                         retriveThirdPartyPlaces(privateScopeContent.thirdPartyPlacesRepositoryList[repositoryIndex],
-                                                query, 
+                                                locationQuery, 
                                                 onPlacesRetivedSuccesfully, 
                                                 onPlacesRetiveFail);
                     }
@@ -64,12 +65,16 @@ module.exports = (function() {
             }
         });
     }
+
+    function validateQuery(locationQuery) {
+        return [];
+    }
     
     function retriveThirdPartyPlaces(thirdPartyPlacesRepository, query, successfullCallback, failedCallback) {
 
        console.log(`Trying to fetch data from ${thirdPartyPlacesRepository.getIdentifier()} - ${thirdPartyPlacesRepository.getName()} `)
   
-       thirdPartyPlacesRepository.getPlacesLocatedArround(query.latitude, query.longitud, query.type)
+       thirdPartyPlacesRepository.getPlacesLocatedArround(query)
                                 .then(thirdPartyPlaces => {
                                 if (successfullCallback)
                                     successfullCallback(thirdPartyPlaces); 

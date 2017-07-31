@@ -12,8 +12,8 @@ module.exports = (function() {
 
         let placesService = privateScope.get(this);
 
-        placesService.getPlacesLocatedArround(request.params.latitude, request.params.longitud, request.params.type)
-                     .then(places => reply(JSON.stringify(places)))
+        placesService.getPlacesLocatedArround(request.query)
+                     .then(places => reply(places))
                      .catch(error => reply(error));    
     }
 

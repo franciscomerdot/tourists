@@ -2,8 +2,10 @@
 
 module.exports = (function() {
 
-    let https = require('https');
-    let querystring = require('querystring');
+    const privateScope = new WeakMap();
+
+    const https = require('https');
+    const querystring = require('querystring');
 
     function YelpTokenProvider() {
         privateScope.set(this, {
@@ -13,25 +15,41 @@ module.exports = (function() {
     }; 
     
     YelpTokenProvider.prototype.getToken = function() {
-      
-        var privateScopeContent = privateScope.get(this);
         
-        if (!privateScopeContent.token) //TODO: Validate if the token is expired and generate a new one.
-            
-        hapiServer.route({ method: 'GET',
-                           path: '/places/{latitude},{longitud}/{type}', 
-                           handler: placesEndpoint.getPlacesLocatedArround.bind(placesEndpoint) }); // TODO: explain why we need to bind here. 
+      var privateScopeContent = privateScope.get(this);     
+      
+      return new Promise(function(resolve, reject) {
+            try {
+                if (!privateScopeContent.token) { //TODO: Validate if the token is expired and generate a new one.
+                    generateNewToken()
+                    .then(tokenInfo => {
+                        privateScopeContent.token = tokenInfo.token;
+                        privateScopeContent.expiratioDate = tokenInfo.expiratioDate;
+
+                        resolve(privateScopeContent.token);
+                    })
+                    .catch(error => {
+                        reject(error)
+                    });
+                }
+                else
+                    resolve(privateScopeContent.token);
+            }
+            catch(error) {
+                reject(error);
+            }
+        });
     }
 
-    function generateNewToken(privateScope) {
+    function generateNewToken() {
 
         // TODO: make this data come from external configuration file or implement an injectable provider.
-        data = querystring.stringify({
+        let data = querystring.stringify({
             client_id: 'LZRg7vhTthR7EMC02AS2OQ',
             client_secret: 'Yo3IFKDr9Zn8pywPoIBpSeCVlOWaLmlAXKlYi793mX8kum7LxVupRjPNeMOtJzzQ'
         });
 
-        requestMetadata = {
+        let requestMetadata = {
             host: 'api.yelp.com',
             port: 443,
             method: 'POST',
@@ -50,7 +68,13 @@ module.exports = (function() {
                     var entireResponse = '';
                     res.on('data', chunk => entireResponse += chunk);
                     res.on('end', () => {
-                        console.log()
+                        let yelpTokenInfo = JSON.parse(entireResponse);
+                        let expirationDate = new Date();
+                        expirationDate.setSeconds(expirationDate.getSeconds() + yelpTokenInfo.expires_in)
+                        resolve({
+                            token: yelpTokenInfo.access_token,
+                            expirationDate: expirationDate
+                        });
                     });
                     res.on('error', error => reject(error))
                 });

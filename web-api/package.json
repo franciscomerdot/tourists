@@ -22,7 +22,6 @@
     "eslint-plugin-standard": "^3.0.1",
     "gulp": "^3.9.1",
     "gulp-eslint": "^4.0.0",
-    "gulp-jslint": "^1.0.10",
     "gulp-mocha": "^4.3.1"
   }
 }

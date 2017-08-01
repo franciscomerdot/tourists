@@ -27,10 +27,10 @@ module.exports = (function () {
       .catch(error => reply(error))
   }
 
-  PlacesEndpoint.prototype.getPlacesInformation = function (request, reply) {
+  PlacesEndpoint.prototype.getPlaceInformation = function (request, reply) {
     let placesSearchService = privateScope.get(this).placesSearchService
 
-    placesSearchService.getPlacesInformation(readonly.params.providerIdentifier, readonly.params.placeIdentifier)
+    placesSearchService.getPlaceInformation(request.params.providerIdentifier, request.params.placeIdentifier)
       .then(places => reply(places))
       .catch(error => reply(error))
   }

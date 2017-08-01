@@ -3,9 +3,10 @@
 module.exports = (function () {
   const co = require('co')
   const MongoClient = require('mongodb').MongoClient
+  const ObjectId = require('mongodb').ObjectID
 
   let privateScope = new WeakMap()
-  let databaseConnectionString = 'mongodb://tourists-data:27017/tourists'
+  let databaseConnectionString = 'mongodb://tourists-data:27017/tourists' // TODO: Get it from external file or configuration T_T don't hardcode things.
 
   function PlacesRepositoryTourist () {}
 
@@ -97,6 +98,39 @@ module.exports = (function () {
     }
   }
 
+  PlacesRepositoryTourist.prototype.getPlaceInformation = function(providerIdentifier, placeIdentifier) {
+
+       return co(function* () {
+        let mongoDb = yield MongoClient.connect(databaseConnectionString)
+
+        let touristsPlaces = mongoDb.collection('places');
+        yield touristsPlaces.ensureIndex({ location: "2dsphere" })
+        
+        let filter;
+
+        if (providerIdentifier == 'TOURISTS_PLACES')
+            filter = { "_id" : ObjectId(placeIdentifier) }
+        else
+            filter = { providers: { $elemMatch: { id: providerIdentifier, placeId: placeIdentifier } } }
+
+
+
+        let touristsPlace = yield new Promise(function (resolve) { 
+            touristsPlaces.findOne(filter, function(error, recort) {
+            if (error)
+                reject(error)
+            else
+                resolve(recort)
+            }) 
+        })
+
+        if (!touristsPlace) throw new Error('The requested place is not reachable.');
+        
+        return parseResponseToTouristModel([touristsPlace], touristsPlace.type)[0] || touristsPlace;        
+    })
+  }
+  
+
   PlacesRepositoryTourist.prototype.getPlacesLocatedArround = function (locationQuery) {
 
     return co(function* () {
@@ -151,6 +185,3 @@ module.exports = (function () {
 
   return PlacesRepositoryTourist
 }())
-
-
-

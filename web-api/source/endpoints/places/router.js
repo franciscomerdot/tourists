@@ -22,7 +22,7 @@ module.exports = (function () {
 
     hapiServer.route({ method: 'GET',
       path: '/places/information/{providerIdentifier}/{placeIdentifier}',
-      handler: placesEndpoint.getPlacesInformation.bind(placesEndpoint) })
+      handler: placesEndpoint.getPlaceInformation.bind(placesEndpoint) })
 
     hapiServer.route({ method: 'POST',
       path: '/places/rate',

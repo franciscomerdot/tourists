@@ -16,6 +16,13 @@ before((end) => {
   kernel.getContainer('allPlacesRepositories').setSupportContainersAliases(['functionalPlacesRepositories']) // 'unfunctionalPlacesRepositories'
 
   kernel.bind('placesSearchService').to(require('../../services/placesSearchService'))
+  kernel.bind('placesRepository').to(function() {
+    this.getPlacesLocatedArround = function (locationQuery) {
+      return new Promise(function (resolve, reject) {
+        resolve([])
+      })
+    }
+  })
 
   kernel.bind('thirdPartyPlacesRepository').to(function () {
     this.getIdentifier = () => 'FAIL_PLACES'

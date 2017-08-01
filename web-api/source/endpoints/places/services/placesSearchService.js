@@ -13,6 +13,10 @@ module.exports = (function () {
     return new Promise(function(resolve) { resolve([{ key: 'restaurant', name: 'Restaurants', description: 'Just food.' }]) }); // TODO: Persists types in the database.
   }
 
+  PlacesService.prototype.getPlaceInformation = function(providerIdentifier, placeIdentifier) {
+    return privateScope.get(this).placesRepository.getPlaceInformation(providerIdentifier, placeIdentifier);
+  }
+
   PlacesService.prototype.getPlacesLocatedArround = function (locationQuery) {
     let privateScopeContent = privateScope.get(this)
 

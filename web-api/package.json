@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "setup": "npm install -g nodemon && npm install",
+    "setup": "npm install --only=prod -g nodemon && npm install",
     "start": "cd source && nodemon startup.js --legacy-watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@jems/di": "^0.3.4",
+    "co": "^4.6.0",
     "hapi": "^16.5.0",
     "mongodb": "^2.2.30",
     "yelp-fusion": "^1.0.3"

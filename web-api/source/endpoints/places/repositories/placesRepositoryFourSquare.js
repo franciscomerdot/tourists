@@ -48,7 +48,7 @@ module.exports = (function () {
                 return
               }
 
-              if (fourSquareResponse.meta.code === 200) { resolve(parseResponseToTouristModel(fourSquareResponse)) } else { reject(new Error('Can not get FourSquare places due status: ' + fourSquareResponse.meta.errorDetail)) }
+              if (fourSquareResponse.meta.code === 200) { resolve(parseResponseToTouristModel(fourSquareResponse, locationQuery.type)) } else { reject(new Error('Can not get FourSquare places due status: ' + fourSquareResponse.meta.errorDetail)) }
             })
         })
           .on('error', error => { reject(error) })
@@ -58,13 +58,13 @@ module.exports = (function () {
     })
   }
 
-  function parseResponseToTouristModel (fourSquareResponse) {
+  function parseResponseToTouristModel (fourSquareResponse, type) {
     return fourSquareResponse.response.venues.map(item => {
       return {
         provider: 'FOUR_SQUARE',
         id: item.id,
         name: item.name,
-        isOpen: undefined,
+        type: type,
         location: {
           latitude: item.location.lat,
           longitud: item.location.lng

@@ -14,8 +14,8 @@ module.exports = (function () {
   PlacesEndpoint.prototype.getPlacesTypes = function (request, reply) {
     let placesSearchService = privateScope.get(this).placesSearchService
 
-    placesSearchService.getPlacesLocatedArround(request.query)
-      .then(places => reply(places))
+    placesSearchService.getPlacesTypes()
+      .then(types => reply(types))
       .catch(error => reply(error))
   }
 
@@ -30,7 +30,7 @@ module.exports = (function () {
   PlacesEndpoint.prototype.getPlacesInformation = function (request, reply) {
     let placesSearchService = privateScope.get(this).placesSearchService
 
-    placesSearchService.getPlacesLocatedArround(request.query)
+    placesSearchService.getPlacesInformation(readonly.params.providerIdentifier, readonly.params.placeIdentifier)
       .then(places => reply(places))
       .catch(error => reply(error))
   }
@@ -38,7 +38,7 @@ module.exports = (function () {
   PlacesEndpoint.prototype.ratePlace = function (request, reply) {
     let placesSearchService = privateScope.get(this).placesSearchService
 
-    placesSearchService.getPlacesLocatedArround(request.query)
+    placesSearchService.ratePlace(request.query)
       .then(places => reply(places))
       .catch(error => reply(error))
   }

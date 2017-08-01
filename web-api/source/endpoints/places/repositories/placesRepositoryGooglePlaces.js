@@ -47,7 +47,7 @@ module.exports = (function () {
                 return
               }
 
-              if (googleResponse.status.toUpperCase() === 'OK') { resolve(parseResponseToTouristModel(googleResponse)) } else { reject(new Error('Can not get google places due status: ' + googleResponse.status)) }
+              if (googleResponse.status.toUpperCase() === 'OK') { resolve(parseResponseToTouristModel(googleResponse, locationQuery.type)) } else { reject(new Error('Can not get google places due status: ' + googleResponse.status)) }
             })
         })
           .on('error', error => { reject(error) })
@@ -57,13 +57,13 @@ module.exports = (function () {
     })
   }
 
-  function parseResponseToTouristModel (googleResponse) {
+  function parseResponseToTouristModel (googleResponse, type) {
     return googleResponse.results.map(item => {
       return {
         provider: 'GOOGLE_PLACES',
         id: item.id,
         name: item.name,
-        isOpen: item.opening_hours ? item.opening_hours.open_now : undefined,
+        type: type,
         location: {
           latitude: item.geometry.location.lat,
           longitud: item.geometry.location.lng

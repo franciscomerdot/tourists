@@ -31,7 +31,7 @@ module.exports = (function () {
   function BindImplementedRepositories (kernel) {
     kernel.bind('placesRepository').to(require('./repositories/placesRepositoryTourists'))
 
-    // kernel.bind('thirdPartyPlacesRepository').to(require('./repositories/placesRepositoryGooglePlaces'))
+    kernel.bind('thirdPartyPlacesRepository').to(require('./repositories/placesRepositoryGooglePlaces'))
     kernel.bind('thirdPartyPlacesRepository').to(require('./repositories/placesRepositoryFourSquare'))
     kernel.bind('thirdPartyPlacesRepository').to(require('./repositories/placesRepositoryYelp'))
   }

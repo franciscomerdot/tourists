@@ -52,7 +52,6 @@ module.exports = (function () {
   }
 
   function parseResponseToTouristModel (yelpResponse) {
-    console.log(yelpResponse)
     return []
   }
 

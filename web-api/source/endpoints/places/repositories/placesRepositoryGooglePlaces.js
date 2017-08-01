@@ -30,7 +30,7 @@ module.exports = (function () {
           locationQuery.radius = 50000
         }
 
-        let googleRequest = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?radius=${locationQuery.radius}&location=${locationQuery.latitude},${locationQuery.longitud}&type=${locationQuery.type}&key=${googleApiKey}`
+        let googleRequest = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?radius=${locationQuery.radius}&location=${locationQuery.latitude},${locationQuery.longitude}&type=${locationQuery.type}&key=${googleApiKey}`
 
         https.get(googleRequest, resp => {
           let buffer = ''
@@ -66,7 +66,7 @@ module.exports = (function () {
         type: type,
         location: {
           latitude: item.geometry.location.lat,
-          longitud: item.geometry.location.lng
+          longitude: item.geometry.location.lng
         },
         closeTo: item.vicinity
       }

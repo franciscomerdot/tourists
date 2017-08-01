@@ -27,7 +27,7 @@ module.exports = (function () {
 
         let request = {
           latitude: locationQuery.latitude,
-          longitude: locationQuery.longitud,
+          longitude: locationQuery.longitude,
           categories: locationQuery.type,
           radius: locationQuery.radius < 40000 ? locationQuery.radius : 4000 // TODO: Oh my good, hard code 40000, make it configurable :(, NOW ..!
         }

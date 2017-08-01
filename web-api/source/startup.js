@@ -13,15 +13,22 @@ kernel.loadModules(moduleFinder.getEndpointsModules())
 let routers = kernel.resolve('routerList')
 console.log(`${routers.length} routers found.`)
 
-server.connection({ port: 8081 })
+server.connection({ port: 80, routes: { cors: true } })
 
 routers.forEach(function (router) {
   router.route(server)
 }, this)
 
-server.start((err) => {
-  if (err) {
-    throw err
-  }
-  console.log(`Server running at: ${server.info.uri}.`)
-})
+server.register({
+	register: require('hapi-cors'),
+	options: {
+		origins: ['*']
+	}
+}, function(err){
+  server.start((err) => {
+    if (err) {
+      throw err
+    }
+    console.log(`Server running at: ${server.info.uri}.`)
+  })
+});

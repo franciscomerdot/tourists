@@ -2,7 +2,7 @@ FROM node:latest
 
 MAINTAINER Francisco Mercedes
 
-ENV PORT=3500
+ENV PORT=80
 
 COPY "./source" "/var/www/tourists-web-api/source"
 COPY "./package.json" "/var/www/tourists-web-api/"

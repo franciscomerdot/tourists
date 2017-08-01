@@ -29,7 +29,7 @@ module.exports = (function () {
                 let touristsPlace = yield touristsPlaces.findOne({ providers: { $elemMatch: { id: place.provider, placeId: place.id } } })
 
                 if (!touristsPlace )
-                    touristsPlace = yield getPosibleTouristsPlace(place.name, place.location.latitude, place.location.longitud, touristsPlaces)
+                    touristsPlace = yield getPosibleTouristsPlace(place.name, place.location.latitude, place.location.longitude, touristsPlaces)
 
                 if (touristsPlace) {
                     mapStoredPlaceWithMatchPlace(touristsPlace, place);
@@ -41,7 +41,7 @@ module.exports = (function () {
                         placeId: place.id,
                         date: new Date()
                     })
-                    place.location = { type: "Point", coordinates: [parseFloat(place.location.longitud.toFixed(6)),
+                    place.location = { type: "Point", coordinates: [parseFloat(place.location.longitude.toFixed(6)),
                                                                     parseFloat(place.location.latitude.toFixed(6))] }
 
                     delete place.id;
@@ -65,7 +65,7 @@ module.exports = (function () {
     });
   }
 
-  function getPosibleTouristsPlace(name, latitude, longitud, placesCollection) {
+  function getPosibleTouristsPlace(name, latitude, longitude, placesCollection) {
     return new Promise(function(resolve, reject) {
         placesCollection.findOne({
             name: name,
@@ -73,7 +73,7 @@ module.exports = (function () {
                 $near : {
                     $geometry : {
                         type : "Point" ,
-                        coordinates : [longitud, latitude]
+                        coordinates : [longitude, latitude]
                     },
                     $minDistance : 50
                 }
@@ -149,7 +149,7 @@ module.exports = (function () {
                     $near  : {
                         $geometry : {
                             type : "Point" ,
-                            coordinates : [parseFloat(locationQuery.longitud), parseFloat(locationQuery.latitude)]
+                            coordinates : [parseFloat(locationQuery.longitude), parseFloat(locationQuery.latitude)]
                         },
                         $maxDistance : parseFloat(locationQuery.radius)
                     }
@@ -176,7 +176,7 @@ module.exports = (function () {
         type: type,
         location: {
           latitude: item.location.coordinates[1],
-          longitud: item.location.coordinates[0]
+          longitude: item.location.coordinates[0]
         },
         closeTo: item.closeTo
       }

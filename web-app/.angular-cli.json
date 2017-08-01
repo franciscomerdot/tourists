@@ -54,6 +54,9 @@
     }
   },
   "defaults": {
+    "serve": {
+      "host": "127.0.0.1"
+    },
     "styleExt": "css",
     "component": {
       "spec": false,

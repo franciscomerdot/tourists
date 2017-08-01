@@ -11,7 +11,7 @@ module.exports = (function () {
     var placesEndpoint = privateScope.get(this)
 
     hapiServer.route({ method: 'GET',
-      path: '/places/{latitude},{longitud}/{type}',
+      path: '/places/{latitude},{longitude}/{type}',
       handler: placesEndpoint.getPlacesLocatedArround.bind(placesEndpoint) }) // TODO: explain why we need to bind here. 
   }
 

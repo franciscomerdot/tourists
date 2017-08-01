@@ -32,7 +32,7 @@ module.exports = (function () {
           locationQuery.radius = 100000
         }
 
-        let fourSquareRequest = `https://api.foursquare.com/v2/venues/search?ll=${locationQuery.latitude},${locationQuery.longitud}&radius=${locationQuery.radius}&categoryId=${locationQuery.type}&oauth_token=${fourSquareApiToken}`
+        let fourSquareRequest = `https://api.foursquare.com/v2/venues/search?ll=${locationQuery.latitude},${locationQuery.longitude}&radius=${locationQuery.radius}&categoryId=${locationQuery.type}&oauth_token=${fourSquareApiToken}`
         https.get(fourSquareRequest, resp => {
           let buffer = ''
 
@@ -67,7 +67,7 @@ module.exports = (function () {
         type: type,
         location: {
           latitude: item.location.lat,
-          longitud: item.location.lng
+          longitude: item.location.lng
         },
         closeTo: item.location.formattedAddress.join(', ')
       }

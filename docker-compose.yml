@@ -14,24 +14,29 @@ services:
       context: ./web-api/
       dockerfile: ./.docker/tourists-web-api.dockerfile
     ports:
-      - "8081:8081"
+      - "8081:80"
     links:
       - "tourists-data"
     volumes:
       - ./web-api/:/var/www/tourists-web-api
     working_dir: /var/www/tourists-web-api
-  # tourists-web-app:
-  #   container_name: tourists-web-app
-  #   build:
-  #     context: ./web-app/
-  #     dockerfile: ./.docker/tourists-web-app.dockerfile
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./web-app/distribution:/usr/share/nginx/html
-  #   working_dir: /usr/share/nginx/html
-    #entrypoint: npm run startDev
+  tourists-web-app:
+    container_name: tourists-web-app
+    build:
+      context: ./web-app/
+      dockerfile: ./.docker/tourists-web-app.dockerfile
+    environment:
+      "PORT": "8080"
+    ports:
+      - "80:8080"
+      - "443:443"
+    links:
+      - "tourists-web-api"
+    volumes:
+      - ./web-app/distribution:/usr/share/nginx/html
+      - ./web-app:/var/www/tourists-web-app
+    working_dir: /var/www/tourists-web-app
+    entrypoint: npm run start
 # networks:
 #   tourists:
 #     driver: bridge

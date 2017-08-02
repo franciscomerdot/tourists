@@ -10,5 +10,3 @@ RUN apt-get install -yq nodejs build-essential
 RUN npm install -g @angular/cli
 
 COPY "./distribution" "/usr/share/nginx/html"
-
-EXPOSE $PORT

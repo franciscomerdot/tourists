@@ -49,7 +49,7 @@ export class MapComponent {
         })
       }, error => {        
         console.error(error);
-        alert('You must allow the browser, the access to your location.')
+        alert('You must allow the browser, the access to your location, try another browser.')
       });
     } else {
       alert('Must manually specify the location because, this device do not support geolocation or dont have acces to it .:(')

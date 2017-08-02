@@ -10,15 +10,15 @@ import { Place } from "../../models/Place";
              [zoom]="16">
       <agm-marker [latitude]="lat" 
                   [longitude]="lng" 
-                  [iconUrl]="personMapIconPath"></agm-marker>
+                  [iconUrl]="personMapIconPath"
+                  [title]="'This is you'"></agm-marker>
 
       <agm-marker *ngFor="let place of places" 
                   [latitude]="place.location.latitude" 
                   [longitude]="place.location.longitude" 
-                  [iconUrl]="restauranMapIconPath"></agm-marker>
+                  [iconUrl]="restauranMapIconPath"
+                  [title]="place.name"></agm-marker>
     </agm-map>
-    <div *ngFor="let t of test">{{ t }}</div>
-    <div *ngFor="let p of places">{{ p.name }}</div>
   `,
   styles: ['agm-map {  height: 800px; }'],
   providers: [PlacesService]
@@ -32,7 +32,6 @@ export class MapComponent {
   personMapIconPath:string;
   restauranMapIconPath:string;
   places:Place[];
-  test:string[] = ['adsfsd', 'sfgksbdfbg'];
 
   constructor(placesService: PlacesService, _ngZone: NgZone) {
 

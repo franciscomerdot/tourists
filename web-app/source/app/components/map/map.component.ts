@@ -47,6 +47,9 @@ export class MapComponent {
         placesService.getPlacesArround(position.coords.latitude, position.coords.longitude, places => {
           this.places = places;
         })
+      }, error => {        
+        console.error(error);
+        alert('You must allow the browser, the access to your location.')
       });
     } else {
       alert('Must manually specify the location because, this device do not support geolocation or dont have acces to it .:(')
